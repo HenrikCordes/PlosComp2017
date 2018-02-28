@@ -36,7 +36,7 @@ function Sol = iMATAO(model,Zopt,rxn_exp,coreset,eps,samplesize,FVArange,deltama
   %(default 10)
   
 %**************************************************************************
-%         Semid·n (robaina@mpimp-golm.mpg.de), May, 2016
+%         Semid√°n (robaina@mpimp-golm.mpg.de), May, 2016
 %**************************************************************************
   
 if nargin<3 || isempty(rxn_exp),
@@ -118,7 +118,11 @@ ub = [ub;ub_y];
 c = zeros(size(A,2),1);
 
 % Creating Q matrix
-Q = sparse([zeros(2*size(S,2)+2*length(RHindex)+length(RLindex),size(S,2)+2*length(RHindex)+length(RLindex)),[zeros(size(S,2)+2*length(RHindex)+length(RLindex),size(S,2));eye(size(S,2))]]);
+Row1 = 2*size(S,2)+2*length(RHindex)+length(RLindex);
+Col1 = size(S,2)+2*length(RHindex)+length(RLindex);
+Row2 = size(S,2)+2*length(RHindex)+length(RLindex);
+Q = sparse(Row1,Row1);
+Q(Row2+1:end,Col1+1:end) = eye(size(S,2));
 
 % Creating b
 b_s = zeros(size(S,1),1);
@@ -162,7 +166,7 @@ while i<=samplesize,
        end
     end
 end
-v_sol(v_sol<eps)=0;
+v_sol(abs(v_sol)<eps)=0;
 Modmatrix=zeros(size(v_sol));
 Modmatrix(abs(v_sol)>0)=1;
 Sol.Modmatrix=unique(Modmatrix','rows')';
